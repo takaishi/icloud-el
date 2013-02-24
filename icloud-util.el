@@ -1,9 +1,29 @@
+(defun icloud:symbol-to-keyword (symbol)
+  (intern (concat ":" (icloud:to-chain (symbol-name symbol)))))
+
+(defun icloud:convert-alist-keys-to-chain (alist)
+  (mapcar (lambda (pair)
+            (cons (icloud:generate-key pair)
+                  (icloud:generate-value pair)))
+          alist))
+
 (defun icloud:alist-to-plist (alist)
   (let ((plist nil))
     (loop for a in (reverse alist)
-          do (setq plist (cons (cdr a) plist))
-          (setq plist (cons (intern (concat ":" (icloud:to-chain (symbol-name (car a))))) plist)))
+          do
+          (let ((key (car a))
+                (value (cdr a)))
+            (setq plist (cons value plist))
+            (setq plist (cons key plist))))
     plist))
+
+(defun icloud:generate-key (pair)
+  (icloud:symbol-to-keyword (car pair)))
+
+(defun icloud:generate-value (pair)
+  (cdr pair))
+
+(defun icloud:from-icloud (alist))
 
 (defun icloud:to-chain (str)
   (let ((case-fold-search nil))
@@ -40,7 +60,7 @@
   (mapcar (lambda (c)
             (apply 'make-instance
                    class
-                   (icloud:alist-to-plist c)))
+                   (icloud:alist-to-plist (icloud:convert-alist-keys-to-chain c))))
           (assoc-default key response)))
 
 (provide 'icloud-util)
