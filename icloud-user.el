@@ -1,0 +1,18 @@
+(defclass icloud:user ()
+  ((apple-id-aliases :initarg :apple-id-aliases)
+   (first-name :initarg :first-name)
+   (locked  :locked)
+   (full-name :full-name)
+   (status-code :initarg :status-code)
+   (primary-email :initarg :primary-email)
+   (dsid :initarg :dsid)
+   (is-paid-developer :initarg :is-paid-developer)
+   (apple-id :initarg :apple-id)
+   (has-icloud-qualifying-device :initarg :has-icloud-qualifying-device)
+   (apple-id-alias :initarg :apple-id-alias)
+   (icloud-apple-id-alias :initarg :icloud-apple-id-alias)
+   (last-name :initarg :last-name)
+   (primary-email-verified :initarg :primary-email-verified)))
+    
+
+(provide 'icloud-user)
