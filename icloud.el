@@ -87,7 +87,31 @@
   (interactive)
   (kill-buffer (current-buffer)))
 
+(setq icloud:*servces* "*icloud-services*")
 
+(defun icloud:view-services (session)
+  (interactive)
+  (let ((services (oref icloud:*session* services))
+        (buf (get-buffer-create icloud:*servces*))
+        (title-length-max (number-to-string (apply 'max (mapcar (lambda (service) (length (oref service title))) (oref session services))))))
+    (with-current-buffer buf
+      (delete-region (point-min) (point-max))
+      (loop for service in services
+            do (let ((name (oref service title))
+                     (status (oref service status)))
+                 (insert (format (concat "%-" title-length-max "s | %s") name status))
+                 (add-text-properties (line-beginning-position) (line-end-position) `(icloud:service ,service))
+                 (insert "\n")
+                 )))
+    (pop-to-buffer buf)))
 
+(defun icloud:select-service ()
+  (interactve)
+  (let* ((services (mapcar (lambda (service)
+                             (cons (title service) service))
+                           (services icloud:*session*)))
+         (conditions (mapcar (lambda (service) (title service)) (oref icloud:*session* services)))
+         (selected (completing-read "Select service: " conditions)))
+    (assoc-default selected services)))
 
 (provide 'icloud)
