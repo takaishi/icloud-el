@@ -8,7 +8,8 @@
    (user :initarg :user
          :initform nil)
    (services :initarg :services
-             :initform nil)
+             :initform nil
+             :accessor services)
    (cookies :initarg :cookies
             :initform nil)
    (collections :initarg :collections)
