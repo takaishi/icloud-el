@@ -51,7 +51,7 @@
           (if params (concat "?" (icloud:generate-query params)))))
 
 (defmethod startup-url ((s icloud:session))
-  (service-url session 'reminders "/rd/startup" `(:lang "ja-jp" :usertz "Asia/Tokyo" :dsid ,(assoc-default 'dsid (oref s user)))))
+  (service-url s 'reminders "/rd/startup" `(:lang "ja-jp" :usertz "Asia/Tokyo" :dsid ,(assoc-default 'dsid (oref s user)))))
 
 (defmethod generate-cookie-header-line ((s icloud:session))
   `("Cookie" . ,(mapconcat 'identity
@@ -59,8 +59,9 @@
                                      (concat (car (car cookie)) "=" (cdr (car cookie)) "; "))
                                    (oref s cookies))
                            "")))
+
 (defmethod fetch-reminders ((s icloud:session))
-  (let* ((response (request s (startup-url s) "GET" (generate-cookie-header-line session)))
+  (let* ((response (request s (startup-url s) "GET" (generate-cookie-header-line s)))
          (collections (icloud:get-collections-from-response response))
          (reminders (icloud:get-reminders-from-response response)))
     (oset s collections collections)
