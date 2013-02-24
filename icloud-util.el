@@ -23,7 +23,21 @@
 (defun icloud:generate-value (pair)
   (cdr pair))
 
-(defun icloud:from-icloud (alist))
+
+(defun icloud:date-from-icloud (date)
+  (let ((year (aref date 1))
+        (month (aref date 2))
+        (day (aref date 3))
+        (hour (aref date 4))
+        (minute (aref date 5)))
+    (encode-time 0 minute hour day month year)))
+
+(defun icloud:from-icloud (alist)
+  (mapcar (lambda (pair)
+            (if (equal (car pair) ':created-date)
+                (cons (car pair) (icloud:date-from-icloud (cdr pair)))
+              pair))
+          alist))
 
 (defun icloud:to-chain (str)
   (let ((case-fold-search nil))
@@ -60,7 +74,8 @@
   (mapcar (lambda (c)
             (apply 'make-instance
                    class
-                   (icloud:alist-to-plist (icloud:convert-alist-keys-to-chain c))))
+                   (icloud:alist-to-plist
+                    (icloud:from-icloud (icloud:convert-alist-keys-to-chain c)))))
           (assoc-default key response)))
 
 (provide 'icloud-util)

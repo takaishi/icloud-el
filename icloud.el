@@ -33,7 +33,7 @@
       (loop for reminder in reminders
             do (let ((title (format (concat "%-" title-length-max "s | %s") (oref reminder title) (or (oref reminder description) "")))
                      (description (concat " - description: " (oref reminder description)))
-                     (created (concat " - created: " (number-to-string  (aref (oref reminder created-date) 0)))))
+                     (created (concat " - created: " (format-time reminder 'created-date))))
                  (insert title)
                  (add-text-properties (line-beginning-position) (line-end-position) `(reminder ,reminder))
                  (let ((ol (make-overlay (line-beginning-position) (line-end-position)))

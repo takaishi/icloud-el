@@ -31,4 +31,16 @@
     (should (equal (icloud:generate-query plist)
                    query))))
 
+(ert-deftest test-icloud:date-from-icloud ()
+  (let ((icloud '[20130224 2013 2 24 1 27 87])
+        (result (encode-time 0 27 1 24 2 2013)))
+    (should (equal (icloud:date-from-icloud icloud)
+                   result))))
+
+(ert-deftest test-icloud:from-icloud ()
+  (let ((icloud '((:created-date . [20130224 2013 2 24 1 27 87])))
+        (result `((:created-date . ,(encode-time 0 27 1 24 2 2013)))))
+    (should (equal (icloud:from-icloud icloud)
+                   result))))
+
 (ert-run-tests-batch-and-exit)

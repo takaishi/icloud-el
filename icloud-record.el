@@ -13,4 +13,7 @@
         (minute (aref date 5)))
     (encode-time 0 minute hour day month year)))
 
+(defmethod format-time ((it icloud:record) slot &optional format)
+  (format-time-string (or format "%Y-%m-%d %R") (eieio-oref it slot)))
+
 (provide 'icloud-record)
