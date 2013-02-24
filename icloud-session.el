@@ -43,7 +43,12 @@
                             nil
                             (json-encode `(:apple_id ,(oref s id) :password ,(oref s pass) :extended_login true)))))
     (oset s user (assoc-default 'dsInfo response))
-    (oset s services (assoc-default 'webservices response))))
+    (oset s services (mapcar (lambda (service)
+                               (let ((title (symbol-name (car service)))
+                                     (url (assoc-default 'url (cdr service)))
+                                     (status (assoc-default 'status (cdr service))))
+                                 (make-instance icloud:service :title title :url url :status status)))
+                             (assoc-default 'webservices response)))))
 
 (defmethod service-url ((s icloud:session) service path &optional params)
   (concat (assoc-default 'url (assoc-default 'reminders (oref s services)))
